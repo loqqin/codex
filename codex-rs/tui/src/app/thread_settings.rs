@@ -32,7 +32,17 @@ impl App {
             model_context_window: Some(tokens),
             ..ThreadSettingsUpdateParams::default()
         };
-        self.send_thread_settings_update(app_server, params).await;
+        if self.send_thread_settings_update(app_server, params).await {
+            self.chat_widget.set_context_window(tokens);
+            self.chat_widget.add_info_message(
+                format!("Context window for subsequent turns set to {tokens} tokens."),
+                None,
+            );
+        } else {
+            self.chat_widget.add_error_message(
+                "Could not update the context window for this thread.".to_string(),
+            );
+        }
     }
     pub(super) async fn sync_active_thread_model_setting(
         &mut self,

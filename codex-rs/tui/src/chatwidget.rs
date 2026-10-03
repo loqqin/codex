@@ -2033,6 +2033,15 @@ impl ChatWidget {
     pub(crate) fn clear_token_usage(&mut self) {
         self.token_info = None;
     }
+
+    pub(crate) fn set_context_window(&mut self, context_window: i64) {
+        self.config.model_context_window = Some(context_window);
+        if let Some(mut info) = self.token_info.clone() {
+            info.model_context_window = Some(context_window);
+            self.apply_token_info(info);
+        }
+        self.request_redraw();
+    }
 }
 
 fn has_websocket_timing_metrics(summary: RuntimeMetricsSummary) -> bool {
