@@ -952,6 +952,8 @@ impl RolloutRecorder {
                     source: *source,
                     thread_source,
                     model_provider: Some(config.model_provider_id().to_string()),
+                    model_context_window: config.model_context_window(),
+                    model_auto_compact_token_limit: config.model_auto_compact_token_limit(),
                     base_instructions: Some(base_instructions),
                     dynamic_tools: if dynamic_tools.is_empty() {
                         None

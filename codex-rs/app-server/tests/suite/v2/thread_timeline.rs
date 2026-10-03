@@ -81,6 +81,8 @@ async fn timeline_pages_mix_items_and_resolve_the_opening_realtime_session() -> 
             metadata: ThreadPersistenceMetadata {
                 cwd: Some(codex_home.path().to_path_buf()),
                 model_provider: "mock_provider".to_string(),
+                model_context_window: None,
+                model_auto_compact_token_limit: None,
                 memory_mode: ThreadMemoryMode::Enabled,
             },
         })

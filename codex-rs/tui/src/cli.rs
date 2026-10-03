@@ -74,6 +74,14 @@ pub struct Cli {
     #[arg(long = "search", default_value_t = false)]
     pub web_search: bool,
 
+    /// Set the context window for this thread, in tokens. Values above the model's maximum are capped.
+    #[arg(
+        long = "context-window",
+        value_name = "TOKENS",
+        value_parser = clap::value_parser!(i64).range(1..)
+    )]
+    pub context_window: Option<i64>,
+
     /// Disable alternate screen mode
     ///
     /// Runs the TUI in inline mode, preserving terminal scrollback history.

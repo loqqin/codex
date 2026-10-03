@@ -55,6 +55,8 @@ fn resume(thread_id: ThreadId, path: &Path, home: &Path) -> ResumeThreadParams {
         metadata: ThreadPersistenceMetadata {
             cwd: Some(home.to_path_buf()),
             model_provider: "test-provider".into(),
+            model_context_window: None,
+            model_auto_compact_token_limit: None,
             memory_mode: ThreadMemoryMode::Enabled,
         },
     }

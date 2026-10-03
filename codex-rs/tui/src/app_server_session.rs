@@ -1910,6 +1910,8 @@ fn config_request_overrides_from_config(
                 "allow_login_shell"
                     | "default_permissions"
                     | "features"
+                    | "model_auto_compact_token_limit"
+                    | "model_context_window"
                     | "network"
                     | "permissions"
                     | "personality"

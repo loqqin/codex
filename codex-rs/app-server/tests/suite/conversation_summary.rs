@@ -144,6 +144,8 @@ async fn get_conversation_summary_by_thread_id_reads_pathless_store_thread() -> 
             metadata: ThreadPersistenceMetadata {
                 cwd: None,
                 model_provider: "test-provider".to_string(),
+                model_context_window: None,
+                model_auto_compact_token_limit: None,
                 memory_mode: ThreadMemoryMode::Disabled,
             },
         })

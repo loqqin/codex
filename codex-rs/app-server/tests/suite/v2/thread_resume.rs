@@ -4453,6 +4453,8 @@ async fn thread_resume_prefers_persisted_git_metadata_for_local_threads() -> Res
         agent_nickname: None,
         agent_role: None,
         model_provider: Some("mock_provider".to_string()),
+        model_context_window: None,
+        model_auto_compact_token_limit: None,
         base_instructions: None,
         dynamic_tools: None,
         selected_capability_roots: Vec::new(),

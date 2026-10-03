@@ -168,6 +168,8 @@ async fn create_replacement_recorder(
             .clone()
             .unwrap_or_else(|| store.config.default_model_provider_id.clone()),
         generate_memories: source_meta.memory_mode.as_deref() != Some("disabled"),
+        model_context_window: source_meta.model_context_window,
+        model_auto_compact_token_limit: source_meta.model_auto_compact_token_limit,
     };
     let mut params = RolloutRecorderParams::new(
         source_meta.id,

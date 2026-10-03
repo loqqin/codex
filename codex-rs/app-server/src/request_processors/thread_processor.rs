@@ -3749,6 +3749,36 @@ impl ThreadRequestProcessor {
             }
         };
         let (thread_history, resume_source_thread) = resume_result?;
+        if let InitialHistory::Resumed(resumed) = &thread_history
+            && let Some((context_window, auto_compact_limit)) =
+                resumed.history.iter().find_map(|item| match item {
+                    RolloutItem::SessionMeta(meta) if meta.meta.id == resumed.conversation_id => {
+                        let context_window = meta.meta.model_context_window;
+                        let auto_compact_limit = meta.meta.model_auto_compact_token_limit;
+                        (context_window.is_some() || auto_compact_limit.is_some())
+                            .then_some((context_window, auto_compact_limit))
+                    }
+                    _ => None,
+                })
+        {
+            let overrides = request_overrides.get_or_insert_with(HashMap::new);
+            if !overrides.contains_key("model_context_window")
+                && let Some(context_window) = context_window
+            {
+                overrides.insert(
+                    "model_context_window".to_string(),
+                    serde_json::json!(context_window),
+                );
+            }
+            if !overrides.contains_key("model_auto_compact_token_limit")
+                && let Some(auto_compact_limit) = auto_compact_limit
+            {
+                overrides.insert(
+                    "model_auto_compact_token_limit".to_string(),
+                    serde_json::json!(auto_compact_limit),
+                );
+            }
+        }
         // Path-based resume can use an empty request thread ID. Coordinate once its real
         // identity is known; unrelated loaded threads never wait for this cold startup.
         let _goal_resume_guard = if let InitialHistory::Resumed(resumed) = &thread_history {

@@ -907,6 +907,8 @@ async fn update_rollout_metadata(
                 cwd: metadata.meta.cwd.clone(),
                 model_provider_id: store.config.default_model_provider_id.clone(),
                 generate_memories: metadata.meta.memory_mode.as_deref() != Some("disabled"),
+                model_context_window: metadata.meta.model_context_window,
+                model_auto_compact_token_limit: metadata.meta.model_auto_compact_token_limit,
             },
             RolloutRecorderParams::resume(path.to_path_buf()),
             writer_lock.clone(),
@@ -2442,6 +2444,8 @@ mod tests {
         ThreadPersistenceMetadata {
             cwd: Some(std::env::current_dir().expect("cwd")),
             model_provider: "test-provider".to_string(),
+            model_context_window: None,
+            model_auto_compact_token_limit: None,
             memory_mode: ThreadMemoryMode::Enabled,
         }
     }

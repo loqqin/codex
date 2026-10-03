@@ -44,6 +44,8 @@ fn test_config(codex_home: &Path) -> RolloutConfig {
         cwd: codex_home.to_path_buf(),
         model_provider_id: "test-provider".to_string(),
         generate_memories: true,
+        model_context_window: None,
+        model_auto_compact_token_limit: None,
     }
 }
 
@@ -207,6 +209,8 @@ async fn state_db_init_backfills_before_returning() -> anyhow::Result<()> {
             agent_nickname: None,
             agent_role: None,
             model_provider: None,
+            model_context_window: None,
+            model_auto_compact_token_limit: None,
             base_instructions: None,
             dynamic_tools: None,
             selected_capability_roots: Vec::new(),

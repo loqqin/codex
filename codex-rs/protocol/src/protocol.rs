@@ -3164,6 +3164,14 @@ pub struct SessionMeta {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub agent_path: Option<String>,
     pub model_provider: Option<String>,
+    /// Context window configured for this thread at creation, in tokens.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub model_context_window: Option<i64>,
+    /// Auto-compaction threshold configured for this thread, in tokens.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub model_auto_compact_token_limit: Option<i64>,
     /// base_instructions for the session. This *should* always be present when creating a new session,
     /// but may be missing for older sessions. If not present, fall back to rendering the base_instructions
     /// from ModelsManager.
@@ -3219,6 +3227,8 @@ impl Default for SessionMeta {
             agent_role: None,
             agent_path: None,
             model_provider: None,
+            model_context_window: None,
+            model_auto_compact_token_limit: None,
             base_instructions: None,
             dynamic_tools: None,
             selected_capability_roots: Vec::new(),

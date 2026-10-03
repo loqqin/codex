@@ -26,6 +26,8 @@ pub(super) async fn create_thread(
         cwd,
         model_provider_id: params.metadata.model_provider.clone(),
         generate_memories: matches!(params.metadata.memory_mode, ThreadMemoryMode::Enabled),
+        model_context_window: params.metadata.model_context_window,
+        model_auto_compact_token_limit: params.metadata.model_auto_compact_token_limit,
     };
     RolloutRecorder::new_with_writer_lock(
         &config,

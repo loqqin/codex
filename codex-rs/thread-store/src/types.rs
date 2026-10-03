@@ -61,6 +61,12 @@ pub struct ThreadPersistenceMetadata {
     pub cwd: Option<PathBuf>,
     /// Model provider associated with the thread.
     pub model_provider: String,
+    /// Per-thread context window captured when the thread is created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub model_context_window: Option<i64>,
+    /// Per-thread auto-compaction threshold captured when the thread is created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub model_auto_compact_token_limit: Option<i64>,
     /// Memory mode associated with the live thread.
     pub memory_mode: MemoryMode,
 }

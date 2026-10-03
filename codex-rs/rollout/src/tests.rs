@@ -1571,6 +1571,8 @@ async fn test_updated_at_uses_file_mtime() -> Result<()> {
                 agent_nickname: None,
                 agent_role: None,
                 model_provider: Some("test-provider".into()),
+                model_context_window: None,
+                model_auto_compact_token_limit: None,
                 base_instructions: None,
                 dynamic_tools: None,
                 selected_capability_roots: Vec::new(),

@@ -512,6 +512,8 @@ async fn resume_materializes_compressed_rollout_path() -> anyhow::Result<()> {
         cwd: home.path().to_path_buf(),
         model_provider_id: "test-provider".to_string(),
         generate_memories: true,
+        model_context_window: None,
+        model_auto_compact_token_limit: None,
     };
     let uuid = Uuid::from_u128(3);
     let thread_id = ThreadId::from_string(&uuid.to_string())?;
@@ -805,6 +807,8 @@ fn write_rollout(path: &std::path::Path, thread_id: ThreadId, message: &str) -> 
             agent_nickname: None,
             agent_role: None,
             model_provider: None,
+            model_context_window: None,
+            model_auto_compact_token_limit: None,
             base_instructions: None,
             dynamic_tools: None,
             selected_capability_roots: Vec::new(),

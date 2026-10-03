@@ -373,7 +373,7 @@ struct ResumeCommand {
     remote: InteractiveRemoteOptions,
 
     #[clap(flatten)]
-    config_overrides: SessionTuiCli,
+    config_overrides: ResumeTuiCli,
 }
 
 #[derive(Debug, Parser)]
@@ -447,6 +447,35 @@ impl Args for SessionTuiCli {
 
     fn augment_args_for_update(cmd: clap::Command) -> clap::Command {
         TuiCli::augment_args_for_update(cmd).mut_arg("prompt", |arg| arg.conflicts_with("last"))
+    }
+}
+
+/// Resume accepts the regular session arguments, but a saved context window can only be changed
+/// by starting a new thread (or forking one), not by resuming the existing thread.
+#[derive(Debug)]
+struct ResumeTuiCli(TuiCli);
+
+impl Args for ResumeTuiCli {
+    fn augment_args(cmd: clap::Command) -> clap::Command {
+        TuiCli::augment_args(cmd)
+            .mut_arg("prompt", |arg| arg.conflicts_with("last"))
+            .mut_arg("context_window", |arg| arg.hide(true))
+    }
+
+    fn augment_args_for_update(cmd: clap::Command) -> clap::Command {
+        TuiCli::augment_args_for_update(cmd)
+            .mut_arg("prompt", |arg| arg.conflicts_with("last"))
+            .mut_arg("context_window", |arg| arg.hide(true))
+    }
+}
+
+impl clap::FromArgMatches for ResumeTuiCli {
+    fn from_arg_matches(matches: &clap::ArgMatches) -> Result<Self, clap::Error> {
+        TuiCli::from_arg_matches(matches).map(Self)
+    }
+
+    fn update_from_arg_matches(&mut self, matches: &clap::ArgMatches) -> Result<(), clap::Error> {
+        self.0.update_from_arg_matches(matches)
     }
 }
 
@@ -1091,6 +1120,16 @@ async fn cli_main(
     if let Some(subcommand) = subcommand.as_ref() {
         profile_v2_for_subcommand(&interactive, subcommand)?;
     }
+    if interactive.context_window.is_some()
+        && !matches!(
+            subcommand.as_ref(),
+            None | Some(Subcommand::Resume(_)) | Some(Subcommand::Fork(_))
+        )
+    {
+        anyhow::bail!(
+            "`--context-window` is only supported when starting or forking an interactive chat"
+        );
+    }
 
     let open_agents_overview = matches!(&subcommand, Some(Subcommand::Agents(_)));
     match subcommand {
@@ -1460,7 +1499,12 @@ async fn cli_main(
             remote,
             config_overrides,
         })) => {
-            let SessionTuiCli(config_overrides) = config_overrides;
+            let ResumeTuiCli(config_overrides) = config_overrides;
+            if interactive.context_window.is_some() || config_overrides.context_window.is_some() {
+                anyhow::bail!(
+                    "`--context-window` applies when creating a chat. Use `codex fork --context-window <TOKENS>` to create a branch with a different context window."
+                );
+            }
             interactive = finalize_resume_interactive(
                 interactive,
                 root_config_overrides.clone(),
@@ -2404,6 +2448,12 @@ async fn run_interactive_tui(
     remote_auth_token_env: Option<String>,
     arg0_paths: Arg0DispatchPaths,
 ) -> std::io::Result<AppExitInfo> {
+    if let Some(context_window) = interactive.context_window.take() {
+        interactive
+            .config_overrides
+            .raw_overrides
+            .push(format!("model_context_window={context_window}"));
+    }
     if interactive.no_daemon {
         if interactive.agents_overview {
             return Ok(AppExitInfo::fatal(
@@ -2676,6 +2726,7 @@ fn merge_interactive_cli_flags(interactive: &mut TuiCli, subcommand_cli: TuiCli)
         strict_config,
         approval_policy,
         web_search,
+        context_window,
         no_alt_screen,
         no_daemon,
         prompt,
@@ -2696,6 +2747,9 @@ fn merge_interactive_cli_flags(interactive: &mut TuiCli, subcommand_cli: TuiCli)
     }
     if web_search {
         interactive.web_search = true;
+    }
+    if let Some(context_window) = context_window {
+        interactive.context_window = Some(context_window);
     }
     interactive.no_alt_screen |= no_alt_screen;
     interactive.no_daemon |= no_daemon;
@@ -2899,7 +2953,7 @@ mod tests {
         else {
             unreachable!()
         };
-        let SessionTuiCli(resume_cli) = resume_cli;
+        let ResumeTuiCli(resume_cli) = resume_cli;
 
         finalize_resume_interactive(
             interactive,

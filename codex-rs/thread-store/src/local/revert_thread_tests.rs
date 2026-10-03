@@ -294,6 +294,8 @@ async fn create_paginated_thread(store: &LocalThreadStore, thread_id: ThreadId) 
             metadata: ThreadPersistenceMetadata {
                 cwd: Some(std::env::current_dir().expect("cwd")),
                 model_provider: "test-provider".to_string(),
+                model_context_window: None,
+                model_auto_compact_token_limit: None,
                 memory_mode: ThreadMemoryMode::Enabled,
             },
         })

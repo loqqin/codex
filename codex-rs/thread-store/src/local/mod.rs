@@ -1024,6 +1024,8 @@ mod tests {
                 metadata: ThreadPersistenceMetadata {
                     cwd: Some(home.path().to_path_buf()),
                     model_provider: "test-provider".to_string(),
+                    model_context_window: None,
+                    model_auto_compact_token_limit: None,
                     memory_mode: ThreadMemoryMode::Enabled,
                 },
             },
@@ -1378,6 +1380,8 @@ mod tests {
                 metadata: ThreadPersistenceMetadata {
                     cwd: Some(home.path().to_path_buf()),
                     model_provider: "different-provider".to_string(),
+                    model_context_window: None,
+                    model_auto_compact_token_limit: None,
                     memory_mode: ThreadMemoryMode::Enabled,
                 },
             },
@@ -1434,6 +1438,8 @@ mod tests {
                 metadata: ThreadPersistenceMetadata {
                     cwd: Some(home.path().to_path_buf()),
                     model_provider: "different-provider".to_string(),
+                    model_context_window: None,
+                    model_auto_compact_token_limit: None,
                     memory_mode: ThreadMemoryMode::Enabled,
                 },
             },
@@ -1807,6 +1813,8 @@ mod tests {
                 metadata: ThreadPersistenceMetadata {
                     cwd: None,
                     model_provider: "test-provider".to_string(),
+                    model_context_window: None,
+                    model_auto_compact_token_limit: None,
                     memory_mode: ThreadMemoryMode::Enabled,
                 },
             })
@@ -2230,6 +2238,8 @@ mod tests {
         ThreadPersistenceMetadata {
             cwd: Some(std::env::current_dir().expect("cwd")),
             model_provider: "test-provider".to_string(),
+            model_context_window: None,
+            model_auto_compact_token_limit: None,
             memory_mode: ThreadMemoryMode::Enabled,
         }
     }

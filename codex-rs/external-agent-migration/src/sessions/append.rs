@@ -318,6 +318,8 @@ fn persistence_metadata(
     Some(ThreadPersistenceMetadata {
         cwd: Some(meta.cwd.clone()),
         model_provider: meta.model_provider.clone()?,
+        model_context_window: None,
+        model_auto_compact_token_limit: None,
         memory_mode,
     })
 }

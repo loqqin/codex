@@ -9,6 +9,12 @@ pub trait RolloutConfigView {
     fn cwd(&self) -> &Path;
     fn model_provider_id(&self) -> &str;
     fn generate_memories(&self) -> bool;
+    fn model_context_window(&self) -> Option<i64> {
+        None
+    }
+    fn model_auto_compact_token_limit(&self) -> Option<i64> {
+        None
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -18,6 +24,8 @@ pub struct RolloutConfig {
     pub cwd: PathBuf,
     pub model_provider_id: String,
     pub generate_memories: bool,
+    pub model_context_window: Option<i64>,
+    pub model_auto_compact_token_limit: Option<i64>,
 }
 
 pub type Config = RolloutConfig;
@@ -30,6 +38,8 @@ impl RolloutConfig {
             cwd: view.cwd().to_path_buf(),
             model_provider_id: view.model_provider_id().to_string(),
             generate_memories: view.generate_memories(),
+            model_context_window: view.model_context_window(),
+            model_auto_compact_token_limit: view.model_auto_compact_token_limit(),
         }
     }
 }
@@ -54,6 +64,14 @@ impl RolloutConfigView for RolloutConfig {
     fn generate_memories(&self) -> bool {
         self.generate_memories
     }
+
+    fn model_context_window(&self) -> Option<i64> {
+        self.model_context_window
+    }
+
+    fn model_auto_compact_token_limit(&self) -> Option<i64> {
+        self.model_auto_compact_token_limit
+    }
 }
 
 impl<T: RolloutConfigView + ?Sized> RolloutConfigView for &T {
@@ -76,6 +94,14 @@ impl<T: RolloutConfigView + ?Sized> RolloutConfigView for &T {
     fn generate_memories(&self) -> bool {
         (*self).generate_memories()
     }
+
+    fn model_context_window(&self) -> Option<i64> {
+        (*self).model_context_window()
+    }
+
+    fn model_auto_compact_token_limit(&self) -> Option<i64> {
+        (*self).model_auto_compact_token_limit()
+    }
 }
 
 impl<T: RolloutConfigView + ?Sized> RolloutConfigView for Arc<T> {
@@ -97,5 +123,13 @@ impl<T: RolloutConfigView + ?Sized> RolloutConfigView for Arc<T> {
 
     fn generate_memories(&self) -> bool {
         self.as_ref().generate_memories()
+    }
+
+    fn model_context_window(&self) -> Option<i64> {
+        self.as_ref().model_context_window()
+    }
+
+    fn model_auto_compact_token_limit(&self) -> Option<i64> {
+        self.as_ref().model_auto_compact_token_limit()
     }
 }

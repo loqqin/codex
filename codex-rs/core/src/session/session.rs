@@ -1068,6 +1068,9 @@ impl Session {
                             metadata: ThreadPersistenceMetadata {
                                 cwd: Some(config.cwd.to_path_buf()),
                                 model_provider: config.model_provider_id.clone(),
+                                model_context_window: config.model_context_window,
+                                model_auto_compact_token_limit: config
+                                    .model_auto_compact_token_limit,
                                 memory_mode: if config.memories.generate_memories {
                                     ThreadMemoryMode::Enabled
                                 } else {
@@ -1105,6 +1108,8 @@ impl Session {
                             metadata: ThreadPersistenceMetadata {
                                 cwd: Some(config.cwd.to_path_buf()),
                                 model_provider: config.model_provider_id.clone(),
+                                model_context_window: None,
+                                model_auto_compact_token_limit: None,
                                 memory_mode: if config.memories.generate_memories {
                                     ThreadMemoryMode::Enabled
                                 } else {

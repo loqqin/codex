@@ -20,6 +20,8 @@ fn delegated_output_emits_only_first_preview_in_live_patch() {
             metadata: ThreadPersistenceMetadata {
                 cwd: None,
                 model_provider: "test-provider".to_string(),
+                model_context_window: None,
+                model_auto_compact_token_limit: None,
                 memory_mode: ThreadMemoryMode::Enabled,
             },
         },

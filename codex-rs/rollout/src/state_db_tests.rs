@@ -343,6 +343,8 @@ fn write_rollout_with_user_message(
                     agent_role: None,
                     agent_path: None,
                     model_provider: Some("test-provider".to_string()),
+                    model_context_window: None,
+                    model_auto_compact_token_limit: None,
                     base_instructions: None,
                     dynamic_tools: None,
                     selected_capability_roots: Vec::new(),

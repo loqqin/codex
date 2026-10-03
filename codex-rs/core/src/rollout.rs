@@ -43,6 +43,14 @@ impl codex_rollout::RolloutConfigView for Config {
     fn generate_memories(&self) -> bool {
         self.memories.generate_memories
     }
+
+    fn model_context_window(&self) -> Option<i64> {
+        self.model_context_window
+    }
+
+    fn model_auto_compact_token_limit(&self) -> Option<i64> {
+        self.model_auto_compact_token_limit
+    }
 }
 
 pub(crate) mod list {

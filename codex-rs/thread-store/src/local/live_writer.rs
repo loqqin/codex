@@ -108,6 +108,8 @@ pub(super) async fn resume_thread(
         cwd,
         model_provider_id: params.metadata.model_provider.clone(),
         generate_memories: matches!(params.metadata.memory_mode, ThreadMemoryMode::Enabled),
+        model_context_window: params.metadata.model_context_window,
+        model_auto_compact_token_limit: params.metadata.model_auto_compact_token_limit,
     };
     let rollout_id = super::thread_rollout_resolver::rollout_id_from_path_or_legacy_thread_id(
         rollout_path.as_path(),
