@@ -3779,6 +3779,24 @@ impl ThreadRequestProcessor {
                 );
             }
         }
+        if let InitialHistory::Resumed(resumed) = &thread_history
+            && !request_overrides
+                .as_ref()
+                .is_some_and(|overrides| overrides.contains_key("model_context_window"))
+            && let Some(context_window) = resumed.history.iter().rev().find_map(|item| match item {
+                RolloutItem::EventMsg(EventMsg::ThreadSettingsApplied(event))
+                    if event.thread_id == Some(resumed.conversation_id) =>
+                {
+                    event.thread_settings.model_context_window
+                }
+                _ => None,
+            })
+        {
+            request_overrides.get_or_insert_with(HashMap::new).insert(
+                "model_context_window".to_string(),
+                serde_json::json!(context_window),
+            );
+        }
         // Path-based resume can use an empty request thread ID. Coordinate once its real
         // identity is known; unrelated loaded threads never wait for this cold startup.
         let _goal_resume_guard = if let InitialHistory::Resumed(resumed) = &thread_history {

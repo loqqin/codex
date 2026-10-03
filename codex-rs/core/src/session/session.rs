@@ -319,6 +319,7 @@ impl SessionConfiguration {
     ) -> ThreadSettingsSnapshot {
         ThreadSettingsSnapshot {
             model: self.step_settings.collaboration_mode.model().to_string(),
+            model_context_window: self.model_info_overrides.context_window,
             model_provider_id: self.original_config_do_not_use.model_provider_id.clone(),
             service_tier: self.step_settings.service_tier.clone(),
             approval_policy: self.step_settings.approval_policy.value(),
@@ -362,6 +363,7 @@ impl SessionConfiguration {
             personality: self.step_settings.personality,
             disabled_plugin_ids: Some(self.disabled_plugin_ids.clone()),
             turn_extension_init: Some(self.turn_extension_init.clone()),
+            model_context_window: self.model_info_overrides.context_window,
             ..Default::default()
         }
     }
@@ -402,6 +404,17 @@ impl SessionConfiguration {
         current_environments: &[TurnEnvironmentSelection],
     ) -> ConstraintResult<Self> {
         let mut next_configuration = self.clone();
+        if let Some(context_window) = updates.model_context_window {
+            if context_window <= 0 {
+                return Err(ConstraintError::InvalidValue {
+                    field_name: "model_context_window",
+                    candidate: context_window.to_string(),
+                    allowed: "a positive token count".to_string(),
+                    requirement_source: codex_config::RequirementSource::Unknown,
+                });
+            }
+            next_configuration.model_info_overrides.context_window = Some(context_window);
+        }
         if let Some(turn_extension_init) = &updates.turn_extension_init {
             next_configuration.turn_extension_init = turn_extension_init.clone();
         }
@@ -602,6 +615,7 @@ pub(crate) struct SessionSettingsCommit {
 #[derive(Default, Clone)]
 pub(crate) struct SessionSettingsUpdate {
     pub(crate) step_settings: StepSettingsUpdate,
+    pub(crate) model_context_window: Option<i64>,
     /// Omission preserves the current data; an empty initializer clears it.
     pub(crate) turn_extension_init: Option<ExtensionDataInit>,
     pub(crate) environments: Option<TurnEnvironmentSelections>,

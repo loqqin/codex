@@ -60,6 +60,7 @@ pub(super) fn prepare_update(
         active_permission_profile,
         windows_sandbox_level,
         model,
+        model_context_window,
         effort,
         summary,
         service_tier,
@@ -69,6 +70,7 @@ pub(super) fn prepare_update(
     } = overrides;
     SessionSettingsUpdate {
         turn_extension_init,
+        model_context_window,
         step_settings: StepSettingsUpdate {
             model,
             effort,

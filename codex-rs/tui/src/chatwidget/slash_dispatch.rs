@@ -370,6 +370,9 @@ impl ChatWidget {
                 self.open_model_popup();
                 self.defer_input_until_settings_applied();
             }
+            SlashCommand::ContextWindow => {
+                self.add_info_message("Usage: /context-window <tokens>".to_string(), None);
+            }
             SlashCommand::Plan => {
                 self.apply_plan_slash_command();
             }
@@ -803,6 +806,13 @@ impl ChatWidget {
                 });
             }
             SlashCommand::Cd => self.request_working_directory_change(trimmed),
+            SlashCommand::ContextWindow => match trimmed.parse::<i64>() {
+                Ok(tokens) if tokens > 0 => self
+                    .app_event_tx
+                    .send(AppEvent::UpdateContextWindow(tokens)),
+                _ => self
+                    .add_error_message("Usage: /context-window <positive token count>".to_string()),
+            },
             SlashCommand::Pwd => {
                 self.add_error_message("Usage: /pwd".to_string());
             }
@@ -1304,6 +1314,7 @@ impl ChatWidget {
             | SlashCommand::Compact
             | SlashCommand::Review
             | SlashCommand::Model
+            | SlashCommand::ContextWindow
             | SlashCommand::Plan
             | SlashCommand::Goal
             | SlashCommand::Side

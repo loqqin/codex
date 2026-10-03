@@ -51,6 +51,8 @@ Then simply run `codex` to get started.
 
 Set a context window for a new thread with `codex --context-window 160000`. The value is in tokens and is capped at the selected model's maximum. Codex saves this setting with the thread and restores it when you resume; use `codex fork <THREAD_ID> --context-window 160000` to create a branch with a different limit.
 
+Change the context window in the current TUI chat with `/context-window 160000`. The new value applies to subsequent turns and is saved with the thread.
+
 <details>
 <summary>You can also go to the <a href="https://github.com/openai/codex/releases/latest">latest GitHub Release</a> and download the appropriate binary for your platform.</summary>
 

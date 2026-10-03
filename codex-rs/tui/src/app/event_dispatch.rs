@@ -2056,6 +2056,9 @@ impl App {
                 self.sync_active_thread_reasoning_setting(app_server, effort)
                     .await;
             }
+            AppEvent::UpdateContextWindow(tokens) => {
+                self.sync_active_thread_context_window_setting(app_server, tokens).await;
+            }
             AppEvent::UpdateLunaReserveReasoning { thread_id, effort } => {
                 self.update_luna_reserve_reasoning(app_server, thread_id, effort)
                     .await;

@@ -235,6 +235,9 @@ impl ThreadStartResponse {
 #[ts(export_to = "v2/")]
 pub struct ThreadSettingsUpdateParams {
     pub thread_id: String,
+    /// Override the context window for subsequent turns.
+    #[ts(optional = nullable)]
+    pub model_context_window: Option<i64>,
     /// Replace this thread's disabled plugin IDs.
     /// Omitted/null preserves the list; [] clears it.
     #[ts(optional = nullable)]

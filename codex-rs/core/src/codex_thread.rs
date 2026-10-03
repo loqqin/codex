@@ -159,6 +159,7 @@ pub struct CodexThreadSettingsOverrides {
     pub active_permission_profile: Option<ActivePermissionProfile>,
     pub windows_sandbox_level: Option<WindowsSandboxLevel>,
     pub model: Option<String>,
+    pub model_context_window: Option<i64>,
     pub effort: Option<Option<ReasoningEffort>>,
     pub summary: Option<ReasoningSummary>,
     pub service_tier: Option<Option<String>>,
@@ -723,6 +724,7 @@ impl CodexThread {
             active_permission_profile,
             windows_sandbox_level,
             model,
+            model_context_window,
             effort,
             summary,
             service_tier,
@@ -732,6 +734,7 @@ impl CodexThread {
         } = overrides;
         SessionSettingsUpdate {
             turn_extension_init,
+            model_context_window,
             step_settings: StepSettingsUpdate {
                 model,
                 effort,
