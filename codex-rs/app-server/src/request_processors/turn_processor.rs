@@ -826,6 +826,7 @@ impl TurnRequestProcessor {
             || sandbox_policy.is_some()
             || permissions.is_some()
             || model.is_some()
+            || model_context_window.is_some()
             || service_tier.is_some()
             || effort.is_some()
             || summary.is_some()
